@@ -16,24 +16,32 @@ def test_case(houses):
 
 def sample(people):
     xs = []
-    for i in range(100):
+    xs2 = [0 for i in range(10)]
+    while len(xs) < 100:
         who = random.randint(0, len(people) - 1)
-        xs.append(people[who])
-    return xs
+        if who not in xs:
+            xs.append(people[who])
+            xs2[people[who] - 1] += 1
+    return xs, xs2
 
-def mean_x(xs):
-    return statistics.mean(xs)
+def mean_x(xs, xs2):
+    avg = 0
+    for i in range(len(xs2)):
+        xs2[i] /= (i+1)
+        avg += xs2[i]*(i+1)
+    return statistics.mean(xs), avg / sum(xs2)
 
 ans_sum = 0
 res_sum = 0
-
+res2_sum = 0
 # 5 iter
-for i in range(5):
-    city, people, ans = test_case(1000) # suppose there are 1000 houses in town
-    xs = sample(people)
-    res = mean_x(xs)
+for i in range(10):
+    city, people, ans = test_case(10000) # suppose there are 1000 houses in town
+    xs, xs2 = sample(people)
+    res, res2 = mean_x(xs, xs2)
     ans_sum += ans
     res_sum += res
-    print(f"The correct answer is: {ans}, the estimated number is: {res}")
+    res2_sum += res2
+    print(f"The correct answer is: {ans}, the estimated number is: {res}, the adjested number is: {res2}")
 
-print(f"Average difference between:{(res_sum - ans_sum) / 5}")
+print(f"Average difference between:{(res_sum - ans_sum) / 10}, while adjusted difference is: {(res2_sum - ans_sum) / 5}")
